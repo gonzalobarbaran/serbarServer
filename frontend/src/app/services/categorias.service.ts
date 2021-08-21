@@ -5,14 +5,14 @@ import {
   HttpErrorResponse,
   HttpParams
 } from '@angular/common/http';
-import { Producto } from '../models/producto'
+import { Categoria } from '../models/categoria'
 import { identifierModuleUrl } from '@angular/compiler';
 
 @Injectable()
-export class ProductosService {
+export class CategoriasService {
   resourceURL: string;
   constructor(private httpClient: HttpClient) {
-    this.resourceURL = 'http://localhost:3000/api/productos/';
+    this.resourceURL = 'http://localhost:3000/api/categorias/';
   }
 
   getTodos(){
@@ -31,11 +31,11 @@ export class ProductosService {
     );
   }
 
-  post(obj: Producto) {
+  post(obj: Categoria) {
     return this.httpClient.post(this.resourceURL, obj);
   }
 
-  put(obj: Producto) {
+  put(obj: Categoria) {
     return this.httpClient.put(this.resourceURL + obj._id, obj);
   }
 

@@ -13,6 +13,10 @@ app.use(express.json());
 
 // Rutas
 app.use('/api',require('./routes/cliente.routes'));
+app.use('/api', require('./routes/categoria.routes'));
+app.use('/api', require('./routes/producto.routes'));
+app.use('/api', require('./routes/venta.routes'));
+app.use('/api', require('./routes/lista.routes'));
 
 // Empieza el server
 app.listen(app.get('port'), () =>{

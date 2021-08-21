@@ -23,6 +23,7 @@ clienteCtrl.getCliente = async (req,res) => {
 clienteCtrl.editCliente = async (req,res) => {
     const {id} = req.params;
     const cliente = {
+        _id: id,
         CUIT: req.body.CUIT,
         razonSocial: req.body.razonSocial,
         domicilio: req.body.domicilio,

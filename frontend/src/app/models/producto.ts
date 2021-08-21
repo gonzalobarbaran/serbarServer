@@ -1,8 +1,11 @@
-import { Data } from "@angular/router";
+import { Categoria } from "./categoria";
+import { Precio } from "./precio";
 
 export class Producto {
-  ProductoID: number;
-  ProductoNombre: string;
-  ProductoFechaAlta:Date;
-  ProductoStock: number;
+  _id: string;
+  codigo: string;
+  descripcion:string;
+  categoria_id: Categoria;
+  stock: number;
+  precios: Precio[];
 }

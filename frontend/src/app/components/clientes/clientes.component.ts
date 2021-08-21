@@ -45,7 +45,7 @@ export class ClientesComponent implements OnInit {
     });
     
     this.FormRegistro = this.formBuilder.group({
-      idCliente: [null],
+      _id: [null],
       CUIT: [null, [Validators.required, Validators.pattern('^\\d{1,10}$')]],
       razonSocial: [
         null,
@@ -149,7 +149,7 @@ export class ClientesComponent implements OnInit {
     } else {
       // modificar put
       //this.modalDialogService.BloquearPantalla();
-      this.clientesService.put(itemCopy).subscribe((res: any) => {
+      this.clientesService.put(itemCopy, itemCopy._id).subscribe((res: any) => {
         this.Volver();
         this.modalDialogService.Alert('Registro modificado correctamente.');
         this.Buscar();

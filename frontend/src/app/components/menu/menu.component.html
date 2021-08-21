@@ -11,9 +11,6 @@
                 <a class="nav-link"  [routerLink]="['inicio']">Inicio <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"  [routerLink]="['articulos']" title="Gestionar Articulos">Articulos</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link"  [routerLink]="['listas-precios']" title="Listado de precios">Listas de Precios</a>
             </li>
             <li class="nav-item">
@@ -21,25 +18,14 @@
                     Clientes</a>
             </li> 
             <li class="nav-item">
-                <a class="nav-link"  [routerLink]="['empresas']" title="Empresas">
-                    Empresas</a>
-            </li> 
-            <li class="nav-item">
                 <a class="nav-link"  [routerLink]="['productos']" title="Productos">
                     Productos</a>
             </li> 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [routerLink]="['ventas']" title="Ventas">
-                    Informes
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Informe de Ventas</a>
-                    <a class="dropdown-item" href="#">Informe de Compras</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Informe de Devoluciones de Clientes</a>
-                    <a class="dropdown-item" href="#">Informe de Devoluciones de Proveedores</a>
-                </div>
-            </li>
+            <li class="nav-item">
+                <a class="nav-link"  [routerLink]="['ventas']" title="Ventas">
+                    Ventas</a>
+            </li> 
+
             <li class="nav-item" routerLinkActive="active">
                 <a class="nav-link" href="#">Acerca de</a>
             </li>

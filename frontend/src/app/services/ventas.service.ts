@@ -12,14 +12,14 @@ import { Venta } from "../models/venta";
 export class VentasService {
   resourceURL: string;
   constructor(private httpClient: HttpClient) {
-     this.resourceURL = 'https://pav2.azurewebsites.net/api/Ventas/';
+     this.resourceURL = 'http://localhost:3000/api/ventas/';
    }
 
-   get() {
+   getTodos() {
     return this.httpClient.get(this.resourceURL);
   }
 
-  getById(IdCliente: number) {
+  get(IdCliente: string) {
     return this.httpClient.get(this.resourceURL + IdCliente);
   }
 
@@ -27,7 +27,7 @@ export class VentasService {
     return this.httpClient.post(this.resourceURL, obj);
   }
 
-  put(IdCliente: number, obj: Venta) {
+  put(IdCliente: string, obj: Venta) {
     return this.httpClient.put(this.resourceURL + IdCliente, obj);
   }
 

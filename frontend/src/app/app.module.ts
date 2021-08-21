@@ -34,6 +34,8 @@ import { ProductosComponent } from './components/productos/productos.component';
 import { ClientesComponent } from './components/clientes/clientes.component';
 import { ClientesService } from './services/clientes.service';
 import { ListasDePreciosComponent } from './components/listas-de-precios/listas-de-precios.component';
+import { CategoriasService } from './services/categorias.service';
+import { ListaService } from './services/listas.service';
 
 @NgModule({
   imports: [
@@ -82,7 +84,9 @@ import { ListasDePreciosComponent } from './components/listas-de-precios/listas-
     EmpresasService,
     VentasService,
     ProductosService,
-    ClientesService
+    ClientesService,
+    CategoriasService,
+    ListaService,
   ]
 })
 export class AppModule {}

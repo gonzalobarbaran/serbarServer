@@ -35,8 +35,8 @@ export class ClientesService {
     return this.httpClient.post(this.resourceURL, obj);
   }
 
-  put(obj: Cliente) {
-    return this.httpClient.put(this.resourceURL + obj._id, obj);
+  put(obj: Cliente, id) {
+    return this.httpClient.put(this.resourceURL + id, obj);
   }
 
   delete(id) {

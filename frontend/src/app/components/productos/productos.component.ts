@@ -3,7 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Producto } from '../../models/producto';
 import { ProductosService } from '../../services/productos.service';
+import { Categoria } from '../../models/categoria';
+import { CategoriasService } from '../../services/categorias.service';
 import { ModalDialogService } from '../../services/modal-dialog.service';
+import { Precio } from 'src/app/models/precio';
 
 @Component({
   selector: 'app-productos',
@@ -26,6 +29,7 @@ export class ProductosComponent implements OnInit {
   };
 
   Items: Producto[] = null;
+  Cats: Categoria[] = null;
   submitted: boolean = false;
 
   FormBusqueda: FormGroup;
@@ -34,26 +38,32 @@ export class ProductosComponent implements OnInit {
   constructor(
     public formBuilder: FormBuilder,
     private productosService: ProductosService,
+    private categoriasService: CategoriasService,
     private modalDialogService: ModalDialogService
   ) {}
 
   ngOnInit() {
     this.FormRegistro = this.formBuilder.group({
-      ProductoID: [null],
-      ProductoNombre: [
+      _id: [null],
+      descripcion: [
         null,
         [Validators.required, Validators.minLength(5), Validators.maxLength(50)]
       ],
-      ProductoFechaAlta: [
+      
+      codigo: [
         null,
         [
-          Validators.required,
-          Validators.pattern(
-            '(0[1-9]|[12][0-9]|3[01])[-/](0[1-9]|1[012])[-/](19|20)[0-9]{2}'
-          )
+          Validators.required, Validators.minLength(5), Validators.maxLength(50)
         ]
       ],
-      ProductoStock: [null, [Validators.required, Validators.maxLength(7)]],
+
+
+      categoria_id:[
+        null
+      ],
+      nuevaCat: [null],
+      stock: [null, [Validators.required, Validators.maxLength(7)]],
+      precios: [Precio],
 
       
     });
@@ -61,14 +71,17 @@ export class ProductosComponent implements OnInit {
 
   Agregar() {
     this.AccionABMC = 'A';
-    this.FormRegistro.reset({ ProductoID: 0 });
+    this.FormRegistro.reset();
+    this.categoriasService.getTodos().subscribe((res:any) => {
+      this.Cats = res;
+    })
     this.submitted = false;
     this.FormRegistro.markAsUntouched();
   }
 
   // Buscar segun los filtros, establecidos en FormRegistro
   Buscar() {
-    this.productosService.get().subscribe((res: any) => {
+    this.productosService.getTodos().subscribe((res: any) => {
         this.Items = res;
       });
   }
@@ -77,20 +90,23 @@ export class ProductosComponent implements OnInit {
   BuscarPorId(Dto, AccionABMC) {
     window.scroll(0, 0); // ir al incio del scroll
 
-    this.productosService.getById(Dto.ProductoID).subscribe((res: any) => {
-      const itemCopy = { ...res }; // hacemos copia para no modificar el array original del mock
-
-      //formatear fecha de  ISO 8061 a string dd/MM/yyyy
-      var arrFecha = itemCopy.ProductoFechaAlta.substr(0, 10).split('-');
-      itemCopy.ProductoFechaAlta = arrFecha[2] + '/' + arrFecha[1] + '/' + arrFecha[0];
+    this.productosService.get(Dto._id).subscribe((res: any) => {
+      const itemCopy = { ...res }; 
 
       this.FormRegistro.patchValue(itemCopy);
+      this.FormRegistro.value.categoria_id = itemCopy.categoria_id.nombre;
       this.AccionABMC = AccionABMC;
     });
   }
 
   Consultar(Dto) {
+    this.categoriasService.getTodos().subscribe((res:any) => {
+      this.Cats = res;
+    })
     this.BuscarPorId(Dto, 'C');
+    
+
+
   }
 
   // comienza la modificacion, luego la confirma con el metodo Grabar
@@ -98,6 +114,7 @@ export class ProductosComponent implements OnInit {
     this.submitted = false;
     this.FormRegistro.markAsUntouched();
     this.BuscarPorId(Dto, 'M');
+    
   }
 
   // grabar tanto altas como modificaciones
@@ -109,15 +126,7 @@ export class ProductosComponent implements OnInit {
 
     //hacemos una copia de los datos del formulario, para modificar la fecha y luego enviarlo al servidor
     const itemCopy = { ...this.FormRegistro.value };
-
-    //convertir fecha de string dd/MM/yyyy a ISO para que la entienda webapi
-    var arrFecha = itemCopy.ProductoFechaAlta.substr(0, 10).split('/');
-    if (arrFecha.length == 3)
-      itemCopy.ProductoFechaAlta = new Date(
-        arrFecha[2],
-        arrFecha[1] - 1,
-        arrFecha[0]
-      ).toISOString();
+    itemCopy.categoria_id = this.FormRegistro.value.categoria_id;
 
     // agregar post
     if (this.AccionABMC == 'A') {
@@ -132,7 +141,7 @@ export class ProductosComponent implements OnInit {
       // modificar put
       //this.modalDialogService.BloquearPantalla();
       this.productosService
-        .put(itemCopy.ProductoID, itemCopy)
+        .put(itemCopy)
         .subscribe((res: any) => {
           this.Volver();
           this.modalDialogService.Alert('Registro modificado correctamente.');
@@ -153,7 +162,7 @@ export class ProductosComponent implements OnInit {
       'NO',
       () =>
         this.productosService
-          .delete(Dto.ProductosID)
+          .delete(Dto._id)
           .subscribe((res: any) => this.Buscar())
     );
   }
@@ -161,10 +170,26 @@ export class ProductosComponent implements OnInit {
   // Volver desde Agregar/Modificar
   Volver() {
     this.AccionABMC = 'L';
+    this.Buscar();
   }
 
   ImprimirListado() {
     this.modalDialogService.Alert('Sin desarrollar...');
   }
 
+  AgregarCat(){
+    var element = document.getElementById('nuevaCat');
+    element.style.display = "block";
+    var boton = document.getElementById('btnConf');
+    boton.style.display = "block";
+  }
+
+  ConfirmarCat(){
+    var cat = new Categoria();
+    cat.nombre = this.FormRegistro.value.nuevaCat;
+    this.categoriasService.post(cat).subscribe((res: any) =>{
+      this.Volver();
+      this.modalDialogService.Alert('Agregado correctamente');
+    });
+  }
 }

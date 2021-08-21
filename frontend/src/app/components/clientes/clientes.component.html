@@ -116,6 +116,7 @@
 <!-- Registro en Alta,Modificacion o Consulta -->
 <form name="FormRegistro" *ngIf="AccionABMC != 'L'" [formGroup]="FormRegistro">
   <fieldset [disabled]="AccionABMC==='C'">
+    <input type="hidden" class="form-control" formControlName="_id" [ngClass]="" />
     <!--campo razon social-->
     <div class="form-group row">
       <label class="col-form-label col-sm-2 offset-sm-2" for="RazonSocial">
