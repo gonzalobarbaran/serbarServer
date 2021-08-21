@@ -267,6 +267,7 @@ export class VentasComponent implements OnInit {
       venta.venicimiento = this.FormRegistro.value.vencimiento;
       venta.remito = this.FormRegistro.value.remito;
       this.ventasService.post(venta).subscribe((res: any) => {
+        this.DetallesNuevos =[];
         this.Volver();
         this.modalDialogService.Alert('Agregado correctamente');
         this.Buscar();
