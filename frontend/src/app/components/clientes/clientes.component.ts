@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DetalleVenta } from 'src/app/models/detalle-venta';
+import { Venta } from 'src/app/models/venta';
+import { VentasService } from 'src/app/services/ventas.service';
 
 import { Cliente } from '../../models/cliente';
 import { ClientesService } from '../../services/clientes.service';
@@ -26,17 +29,20 @@ export class ClientesComponent implements OnInit {
   };
 
   Items: Cliente[] = null;
+  Ventas: Venta[] = null;
   RegistrosTotal: number;
   Pagina = 1; // inicia pagina 1
   submitted: boolean = false;
 
   FormBusqueda: FormGroup;
   FormRegistro: FormGroup;
+  FormVentas: FormGroup;
 
   constructor(
     public formBuilder: FormBuilder,
     private clientesService: ClientesService,
-    private modalDialogService: ModalDialogService
+    private modalDialogService: ModalDialogService,
+    private ventasService: VentasService
   ) {}
 
   ngOnInit() {
@@ -46,7 +52,7 @@ export class ClientesComponent implements OnInit {
     
     this.FormRegistro = this.formBuilder.group({
       _id: [null],
-      CUIT: [null, [Validators.required, Validators.pattern('^\\d{1,10}$')]],
+      CUIT: [null, [Validators.required, Validators.pattern('^\\d{1,11}$')]],
       razonSocial: [
         null,
         [Validators.required, Validators.minLength(5), Validators.maxLength(55)]
@@ -76,6 +82,30 @@ export class ClientesComponent implements OnInit {
         [Validators.required, Validators.minLength(5), Validators.maxLength(55)]
       ]
     });
+    this.FormVentas = this.formBuilder.group({
+      _id: [null],
+      cliente: [null],
+      razonSocial: [null],
+      CUIT:[null],
+      fecha: [
+        null
+      ],
+      condVenta: [null,
+      [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
+      vencimiento: [
+        null
+      ],
+      remito:[null],
+      productos: [null],
+      listas: [null],
+      precio:[null],
+      cantidad:[null],
+      detalles: [DetalleVenta],
+      subtotal: [null],
+      subIVA: [null],
+      subIIBB: [null],
+      total: [null],
+    })
   }
 
   Agregar() {
@@ -95,7 +125,7 @@ export class ClientesComponent implements OnInit {
         this.Items = res;
       });}
     else{
-      this.clientesService.get(
+      this.clientesService.getByName(
         this.FormBusqueda.value.RazonSocial
       )
       .subscribe((res:any) => {
@@ -179,5 +209,31 @@ export class ClientesComponent implements OnInit {
 
   ImprimirListado() {
     this.modalDialogService.Alert('Sin desarrollar...');
+  }
+
+  VerVentas(){
+    var id = this.FormRegistro.value._id;
+    this.AccionABMC = 'V';
+    this.ventasService.getCliente(id).subscribe((res: any) => {
+      
+      this.Ventas = res;
+      console.log(this.Ventas)
+
+    })
+  }
+
+  detSubtotal(item){
+    return item.cantidad*item.precioUnit;
+  }
+
+  calcularTotal(item){
+    var subtotal = 0;
+
+    for(let detalle of item.detalles){
+      subtotal = subtotal + this.detSubtotal(detalle);
+    }
+    var iva = subtotal*item.porcIVA/100;
+    var iibb = subtotal*item.porcIIBB/100;
+    return subtotal + iva + iibb;
   }
 }

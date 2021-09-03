@@ -3,7 +3,15 @@ const Cliente = require('../models/cliente');
 const clienteCtrl = {};
 
 clienteCtrl.getClientes = async (req,res) =>{
+
     const clientes =  await Cliente.find();
+    res.json(clientes);    
+}
+
+
+clienteCtrl.getClientesxNombre = async (req,res) =>{
+    const {str} = req.params;
+    const clientes =  await Cliente.find({razonSocial: {$regex: str, $options:'i'}}); 
     res.json(clientes);    
 }
 

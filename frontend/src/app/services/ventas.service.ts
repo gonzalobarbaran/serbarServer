@@ -12,11 +12,15 @@ import { Venta } from "../models/venta";
 export class VentasService {
   resourceURL: string;
   constructor(private httpClient: HttpClient) {
-     this.resourceURL = 'http://localhost:3000/api/ventas/';
+     this.resourceURL = 'http://147.182.203.128:3000/api/ventas/';
    }
 
    getTodos() {
     return this.httpClient.get(this.resourceURL);
+  }
+
+  getCliente(id: string) {
+    return this.httpClient.get(this.resourceURL + 'cliente/' + id);
   }
 
   get(IdCliente: string) {

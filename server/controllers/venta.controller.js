@@ -12,6 +12,18 @@ ventaCtrl.getVentas = async (req,res) =>{
     res.json(ventas);    
 }
 
+ventaCtrl.getVentasCliente = async (req,res) =>{
+    const {cliente} = req.params;
+    console.log(cliente);
+    var ventas =  await Venta.find({'cliente': cliente}).populate('cliente').populate({
+        path: 'detalles.producto',
+        model: 'Producto'
+    });
+    
+    res.json(ventas);    
+}
+
+
 ventaCtrl.createVenta = async (req,res) => {
     const venta = new Venta(req.body);
     await venta.save();

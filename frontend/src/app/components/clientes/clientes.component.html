@@ -116,9 +116,44 @@
 <!-- Registro en Alta,Modificacion o Consulta -->
 <form name="FormRegistro" *ngIf="AccionABMC != 'L'" [formGroup]="FormRegistro">
   <fieldset [disabled]="AccionABMC==='C'">
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg" *ngIf="AccionABMC == 'C' || AccionABMC == 'V' ">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngClass]="{ 'show': navbarOpen }"> 
+          <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                  <a class="nav-link"  (click)="AccionABMC = 'C'">Informacion <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link"  (click)="VerVentas()" title="Listado de precios">Ultimas Ventas</a>
+              </li>
+          </ul>
+      </div>
+  </nav>
+  <div *ngIf="AccionABMC == 'V' &&  Ventas?.length > 0">
+  <table class="table table-bordered table-striped" >
+    <thead>
+      <tr>
+        <th class="text-center">Fecha</th>
+        <th class="text-center">Condicion de venta</th>
+        <th class="text-center">Cliente</th>
+        <th class="text-center text-nowrap">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of Ventas">
+        <td class="text-right">{{item.fecha}}</td>
+        <td class="text-right">{{item.condVenta | uppercase}}</td>
+        <td>{{item.cliente.razonSocial | uppercase}}</td>
+        <td>{{calcularTotal(item) | currency:"$"}}</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
     <input type="hidden" class="form-control" formControlName="_id" [ngClass]="" />
     <!--campo razon social-->
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="AccionABMC != 'V'">
       <label class="col-form-label col-sm-2 offset-sm-2" for="RazonSocial">
         Razon Social <span class="text-danger">*</span>
       </label>
@@ -132,7 +167,7 @@
     </div>
 
     <!--campo cuit-->
-    <div class="row form-group">
+    <div class="row form-group" *ngIf="AccionABMC != 'V'">
       <label class="col-form-label col-sm-2 offset-sm-2" for="CUIT">
         CUIT <span class="text-danger">*</span>
       </label>
@@ -145,13 +180,13 @@
           [ngClass]="{'is-invalid': (FormRegistro.controls.CUIT.touched || submitted) && FormRegistro.controls.CUIT.errors} "
         />
         <span class="text-danger" *ngIf="(FormRegistro.controls.razonSocial.touched || submitted) && FormRegistro.controls.CUIT.errors?.pattern">
-          Dato numérico, 1 a 10 dígitos.
+          Dato numérico, 1 a 11 dígitos.
         </span>
       </div>
     
     </div>
         <!--campo domicilio-->
-        <div class="form-group row">
+        <div class="form-group row" *ngIf="AccionABMC != 'V'">
           <label class="col-form-label col-sm-2 offset-sm-2" for="Domicilio">
             Domicilio <span class="text-danger">*</span>
           </label>
@@ -161,7 +196,7 @@
           </div>
         </div>
             <!--campo localidad-->
-            <div class="form-group row">
+            <div class="form-group row" *ngIf="AccionABMC != 'V'">
             <label class="col-form-label col-sm-2 offset-sm-2" for="Localidad">
               Localidad <span class="text-danger">*</span>
             </label>
@@ -171,7 +206,7 @@
             </div>
           </div>
         <!--campo provincia-->
-        <div class="form-group row">
+        <div class="form-group row" *ngIf="AccionABMC != 'V'">
         <label class="col-form-label col-sm-2 offset-sm-2" for="Provincia">
           Provincia <span class="text-danger">*</span>
         </label>
@@ -182,7 +217,7 @@
       </div>
     
     <!--campo condicion iva-->
-            <div class="form-group row">
+            <div class="form-group row" *ngIf="AccionABMC != 'V'">
               <label class="col-form-label col-sm-2 offset-sm-2" for="CondIVA">
                 Condicion IVA <span class="text-danger">*</span>
               </label>
@@ -193,7 +228,7 @@
             </div>
 
     <!--campo Telefono-->
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="AccionABMC != 'V'">
       <label class="col-form-label col-sm-2 offset-sm-2" for="Telefono">
         Telefono <span class="text-danger">*</span>
       </label>
@@ -211,7 +246,7 @@
       </div>
     </div>
   <!--campo email-->
-  <div class="form-group row">
+  <div class="form-group row" *ngIf="AccionABMC != 'V'">
     <label class="col-form-label col-sm-2 offset-sm-2" for="Email">
       Email <span class="text-danger">*</span>
     </label>

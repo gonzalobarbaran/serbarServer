@@ -12,7 +12,7 @@ import { identifierModuleUrl } from '@angular/compiler';
 export class CategoriasService {
   resourceURL: string;
   constructor(private httpClient: HttpClient) {
-    this.resourceURL = 'http://localhost:3000/api/categorias/';
+    this.resourceURL = 'http://147.182.203.128:3000/api/categorias/';
   }
 
   getTodos(){
